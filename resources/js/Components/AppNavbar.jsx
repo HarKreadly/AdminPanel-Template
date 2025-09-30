@@ -1,6 +1,10 @@
 import React, { useState, useRef, useEffect } from "react";
-import { TbLayoutSidebarLeftExpandFilled, TbLayoutSidebarLeftCollapse } from "react-icons/tb";
+import {
+    TbLayoutSidebarLeftExpandFilled,
+    TbLayoutSidebarLeftCollapse,
+} from "react-icons/tb";
 import { MdLightMode, MdDarkMode } from "react-icons/md";
+import { Link } from "@inertiajs/react";
 
 export default function AppNavbar({ collapsed, toggleSidebar, header }) {
     const [showDropdown, setShowDropdown] = useState(false);
@@ -27,12 +31,16 @@ export default function AppNavbar({ collapsed, toggleSidebar, header }) {
 
     useEffect(() => {
         const handleClickOutside = (event) => {
-            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+            if (
+                dropdownRef.current &&
+                !dropdownRef.current.contains(event.target)
+            ) {
                 setShowDropdown(false);
             }
         };
         document.addEventListener("mousedown", handleClickOutside);
-        return () => document.removeEventListener("mousedown", handleClickOutside);
+        return () =>
+            document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
     return (
@@ -81,10 +89,26 @@ export default function AppNavbar({ collapsed, toggleSidebar, header }) {
                         />
                     </button>
                     {showDropdown && (
-                        <div className="absolute right-0 mt-4 w-48 bg-white dark:bg-zinc-800 rounded shadow-lg py-2">
-                            <a href="#" className="block px-4 py-2 text-sm text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-700">Profile</a>
-                            <a href="#" className="block px-4 py-2 text-sm text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-700">Settings</a>
-                            <a href="#" className="block px-4 py-2 text-sm text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-700">Logout</a>
+                        <div className="absolute right-0 mt-4 w-48 bg-white dark:bg-zinc-900 rounded shadow-lg py-2 flex-col border border-zinc-300 dark:border-zinc-600">
+                            <Link
+                                href={route("profile.index")}
+                                className="block px-4 py-2 text-sm text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-700"
+                            >
+                                Profile
+                            </Link>
+                            <Link
+                                href={route("profile.edit")}
+                                className="block px-4 py-2 text-sm text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-700"
+                            >
+                                Settings
+                            </Link>
+                            <Link
+                                href={route("logout")}
+                                method="post"
+                                className="flex items-center justify-start px-4 py-2 text-sm text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-700 w-full"
+                            >
+                                Logout
+                            </Link>
                         </div>
                     )}
                 </div>
