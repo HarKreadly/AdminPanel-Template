@@ -30,7 +30,7 @@ export default function AppLayout({ header, children }) {
     }, []);
 
     return (
-        <div className="flex h-screen bg-zinc-50 dark:bg-zinc-800">
+        <div className="flex">
             <AppAside collapsed={collapsed} />
 
             <AppMain collapsed={collapsed}>

@@ -6,6 +6,8 @@ import { PiPackageFill } from "react-icons/pi";
 import { IoMdSettings } from "react-icons/io";
 import AppNavItem from "./AppNavItem";
 import { IoExit } from "react-icons/io5";
+import { BiSolidUser } from "react-icons/bi";
+
 
 
 const iconClass = "w-5 h-5";
@@ -19,6 +21,7 @@ export default function AppAside({ collapsed }) {
     ];
     
     const footerItems = [
+        { name: "Profile", icon: <BiSolidUser className={iconClass} />, href: route("profile.index"), activeWhen: "profile.index", method: "get" },
         { name: "Settings", icon: <IoMdSettings className={iconClass} />, href: route("profile.edit"), activeWhen: "profile.edit", method: "get" },
         { name: "Sign Out", icon: <IoExit className={iconClass} />, href: route("logout"), activeWhen: "logout", method: "post" },
     ];
