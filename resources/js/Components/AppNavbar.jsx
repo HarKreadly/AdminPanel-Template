@@ -36,7 +36,7 @@ export default function AppNavbar({ collapsed, toggleSidebar, header, notificati
                 </div>
             </div>
 
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-3">
                 {/* Notifications */}
                 <NotificationsButton
                     count={notificationsCount}
