@@ -25,6 +25,7 @@
     "dependencies": {
         "@heroicons/react": "^2.2.0",
         "flowbite-react": "^0.12.9",
+        "react-easy-crop": "^5.5.3",
         "react-icons": "^5.5.0"
     }
 }

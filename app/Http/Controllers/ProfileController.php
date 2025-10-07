@@ -2,14 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ProfileUpdateRequest;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Inertia\Response;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Redirect;
+use App\Http\Requests\ProfileUpdateRequest;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Http\Requests\ProfileAddressUpdateRequest;
 
 class ProfileController extends Controller
 {
@@ -17,8 +19,8 @@ class ProfileController extends Controller
     {
         return Inertia::render('Profile/Index');
     }
-    
-    
+
+
     /**
      * Display the user's profile form.
      */
@@ -31,20 +33,82 @@ class ProfileController extends Controller
     }
 
     /**
-     * Update the user's profile information.
+     * Update the user's profile picture.
      */
-    public function update(ProfileUpdateRequest $request): RedirectResponse
+    public function updateProfilePicture(Request $request)
     {
-        $request->user()->fill($request->validated());
+        $request->validate([
+            'profile_picture' => 'nullable|image|max:2048',
+        ]);
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
+        $user = $request->user();
+
+        if ($request->hasFile('profile_picture')) {
+            // Delete old picture if exists
+            if ($user->profile_picture) {
+                Storage::disk('public')->delete($user->profile_picture);
+            }
+
+            // Store new picture
+            $path = $request->file('profile_picture')->store('profile-pictures', 'public');
+            $user->profile_picture = $path;
+        } elseif ($request->has('profile_picture') && $request->profile_picture === null) {
+            // Handle deletion
+            if ($user->profile_picture) {
+                Storage::disk('public')->delete($user->profile_picture);
+            }
+            $user->profile_picture = null;
         }
 
-        $request->user()->save();
+        $user->save();
+    }
+
+    /**
+     * Update the user's profile information.
+     */
+    public function updateProfileInformation(ProfileUpdateRequest $request)
+    {
+        $user = $request->user();
+
+        $user->fill($request->validated());
+
+        if ($request->filled('first_name') || $request->filled('last_name')) {
+            $nameParts = array_filter([
+                $request->first_name,
+                $request->middle_name,
+                $request->last_name
+            ]);
+            $user->name = !empty($nameParts) ? implode(' ', $nameParts) : $user->name;
+        }
+
+        if ($user->isDirty('email')) {
+            $user->email_verified_at = null;
+        }
+
+        $user->save();
+    }
+
+    /**
+     * Update the user's profile address.
+     */
+    public function updateAddressInformation(ProfileAddressUpdateRequest $request): RedirectResponse
+    {
+        $user = $request->user();
+
+        $user->fill($request->validated());
+
+        $user->save();
 
         return Redirect::route('profile.edit');
     }
+
+
+
+
+
+
+
+
 
     /**
      * Delete the user's account.

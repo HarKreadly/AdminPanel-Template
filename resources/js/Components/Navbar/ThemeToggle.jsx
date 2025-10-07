@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { MdLightMode, MdDarkMode } from "react-icons/md";
+import { IoIosMoon } from "react-icons/io";
+
 
 export default function ThemeToggle({ darkMode, setDarkMode }) {
     const [mounted, setMounted] = useState(false);
@@ -14,7 +16,7 @@ export default function ThemeToggle({ darkMode, setDarkMode }) {
             aria-label={darkMode ? "Disable dark mode" : "Enable dark mode"}
         >
             {darkMode ? (
-                <MdDarkMode className="w-5 h-5 text-yellow-200" />
+                <IoIosMoon className="w-5 h-5 text-yellow-200" />
             ) : (
                 <MdLightMode className="w-5 h-5 text-zinc-700 dark:text-zinc-200" />
             )}

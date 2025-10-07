@@ -10,7 +10,6 @@ export function getMenuItems(routeFn) {
     const r = typeof routeFn === "function" ? routeFn : () => "#";
     return [
         { name: "Dashboard", iconComponent: MdSpaceDashboard, href: r("dashboard"), activeWhen: "dashboard" },
-        { name: "Inbox", iconComponent: InboxIcon, href: "#", activeWhen: "inbox.*" },
         { name: "Users", iconComponent: HiUsers, href: "#", activeWhen: "users.*" },
         { name: "Products", iconComponent: PiPackageFill, href: "#", activeWhen: "products.*" },
     ];

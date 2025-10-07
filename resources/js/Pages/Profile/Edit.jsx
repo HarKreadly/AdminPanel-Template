@@ -1,11 +1,35 @@
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head } from '@inertiajs/react';
-import DeleteUserForm from './Partials/DeleteUserForm';
-import UpdatePasswordForm from './Partials/UpdatePasswordForm';
-import UpdateProfileInformationForm from './Partials/UpdateProfileInformationForm';
-import AppLayout from '@/Layouts/AppLayout';
+import { useState } from "react";
+import { Head } from "@inertiajs/react";
+import AppLayout from "@/Layouts/AppLayout";
+import SettingsSidebar from "./Partials/SettingsSidebar";
+import ProfileSection from "./Partials/ProfileSection";
+import PasswordSection from "./Partials/PasswordSection";
+import DeleteAccountSection from "./Partials/DeleteAccountSection";
 
 export default function Edit({ mustVerifyEmail, status }) {
+    const [selectedSection, setSelectedSection] = useState("profile");
+    const [openAccordion, setOpenAccordion] = useState([
+        "profile_picture",
+        "profile",
+        "adresses",
+        "password",
+        "delete",
+    ]);
+
+    const toggleAccordion = (id) => {
+        setOpenAccordion((prev) =>
+            prev.includes(id)
+                ? prev.filter((item) => item !== id)
+                : [...prev, id]
+        );
+    };
+
+    const sections = [
+        { id: "profile", label: "Profile Information" },
+        { id: "password", label: "Update Password" },
+        { id: "delete", label: "Delete Account" },
+    ];
+
     return (
         <AppLayout
             header={
@@ -16,22 +40,41 @@ export default function Edit({ mustVerifyEmail, status }) {
         >
             <Head title="Profile" />
 
-            <div className="py-12 ">
-                <div className="mx-auto max-w-7xl space-y-6 sm:px-6 lg:px-8">
-                    <div className="bg-white p-4 shadow sm:rounded-lg sm:p-8">
-                        <UpdateProfileInformationForm
-                            mustVerifyEmail={mustVerifyEmail}
-                            status={status}
-                            className="max-w-xl"
+            <div className="py-8 ">
+                <div className="mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="flex flex-col lg:flex-row gap-6">
+                        {/* Fixed Sidebar */}
+                        <SettingsSidebar
+                            sections={sections}
+                            selectedSection={selectedSection}
+                            onSectionChange={setSelectedSection}
                         />
-                    </div>
 
-                    <div className="bg-white p-4 shadow sm:rounded-lg sm:p-8">
-                        <UpdatePasswordForm className="max-w-xl" />
-                    </div>
+                        {/* Scrollable Content Area */}
+                        <section className="flex-1 space-y-4 min-h-auto">
+                            {selectedSection === "profile" && (
+                                <ProfileSection
+                                    openAccordion={openAccordion}
+                                    toggleAccordion={toggleAccordion}
+                                    mustVerifyEmail={mustVerifyEmail}
+                                    status={status}
+                                />
+                            )}
 
-                    <div className="bg-white p-4 shadow sm:rounded-lg sm:p-8">
-                        <DeleteUserForm className="max-w-xl" />
+                            {selectedSection === "password" && (
+                                <PasswordSection
+                                    openAccordion={openAccordion}
+                                    toggleAccordion={toggleAccordion}
+                                />
+                            )}
+
+                            {selectedSection === "delete" && (
+                                <DeleteAccountSection
+                                    openAccordion={openAccordion}
+                                    toggleAccordion={toggleAccordion}
+                                />
+                            )}
+                        </section>
                     </div>
                 </div>
             </div>
