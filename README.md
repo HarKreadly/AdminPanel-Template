@@ -6,7 +6,7 @@ Modern admin starter built with Laravel, Inertia.js (React), Tailwind CSS, and V
 
 <br/>
 
-[![Laravel](https://img.shields.io/badge/Laravel-11.x-ff2d20?logo=laravel&logoColor=white)](https://laravel.com)
+[![Laravel](https://img.shields.io/badge/Laravel-12.x-ff2d20?logo=laravel&logoColor=white)](https://laravel.com)
 [![Inertia](https://img.shields.io/badge/Inertia-React-5a67d8)](https://inertiajs.com)
 [![Node](https://img.shields.io/badge/Node-20+-339933?logo=node.js&logoColor=white)](https://nodejs.org)
 [![License](https://img.shields.io/badge/License-MIT-blue)](LICENSE)
