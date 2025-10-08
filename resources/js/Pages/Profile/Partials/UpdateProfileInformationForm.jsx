@@ -47,7 +47,9 @@ export default function UpdateProfileInformation({
 
     const submit = (e) => {
         e.preventDefault();
-        patch(route("profile.information.update"));
+        patch(route("profile.information.update"), {
+            preserveScroll: true,
+        });
     };
 
     return (
@@ -74,7 +76,7 @@ export default function UpdateProfileInformation({
                                 setData("first_name", e.target.value)
                             }
                             autoComplete="given-name"
-                            placeholder="First Name"
+                            placeholder="Input your first name"
                         />
                         <InputError
                             className="mt-2"
@@ -92,7 +94,7 @@ export default function UpdateProfileInformation({
                                 setData("middle_name", e.target.value)
                             }
                             autoComplete="additional-name"
-                            placeholder="Middle Name"
+                            placeholder="Input your  middle name"
                         />
                         <InputError
                             className="mt-2"
@@ -110,7 +112,7 @@ export default function UpdateProfileInformation({
                                 setData("last_name", e.target.value)
                             }
                             autoComplete="family-name"
-                            placeholder="Last Name"
+                            placeholder="Input your last name"
                         />
                         <InputError
                             className="mt-2"
@@ -131,7 +133,7 @@ export default function UpdateProfileInformation({
                             onChange={(e) => setData("email", e.target.value)}
                             required
                             autoComplete="email"
-                            placeholder="Email"
+                            placeholder="Input your email"
                             icon={
                                 <HiMail className="w-5 h-5 text-zinc-500 dark:text-zinc-400" />
                             }
@@ -148,7 +150,7 @@ export default function UpdateProfileInformation({
                             value={data.phone}
                             onChange={(e) => setData("phone", e.target.value)}
                             autoComplete="tel"
-                            placeholder="Phone"
+                            placeholder="Input your phone"
                         />
                         <InputError className="mt-2" message={errors.phone} />
                     </div>
@@ -170,7 +172,7 @@ export default function UpdateProfileInformation({
                                 setData("date_of_birth", e.target.value)
                             }
                             autoComplete="bday"
-                            placeholder="Date of Birth"
+                            placeholder="Input your date of birth"
                         />
                         <InputError
                             className="mt-2"

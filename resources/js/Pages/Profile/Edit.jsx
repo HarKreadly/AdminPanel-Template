@@ -12,7 +12,7 @@ export default function Edit({ mustVerifyEmail, status }) {
         "profile_picture",
         "profile",
         "adresses",
-        "password",
+        "security",
         "delete",
     ]);
 
@@ -26,7 +26,7 @@ export default function Edit({ mustVerifyEmail, status }) {
 
     const sections = [
         { id: "profile", label: "Profile Information" },
-        { id: "password", label: "Update Password" },
+        { id: "security", label: "Security Information" },
         { id: "delete", label: "Delete Account" },
     ];
 
@@ -34,7 +34,7 @@ export default function Edit({ mustVerifyEmail, status }) {
         <AppLayout
             header={
                 <h2 className="text-xl font-semibold leading-tight text-zinc-800 dark:text-zinc-200">
-                    Profile
+                    Settings
                 </h2>
             }
         >
@@ -61,7 +61,7 @@ export default function Edit({ mustVerifyEmail, status }) {
                                 />
                             )}
 
-                            {selectedSection === "password" && (
+                            {selectedSection === "security" && (
                                 <PasswordSection
                                     openAccordion={openAccordion}
                                     toggleAccordion={toggleAccordion}

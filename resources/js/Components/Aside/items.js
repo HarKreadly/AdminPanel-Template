@@ -5,6 +5,7 @@ import { PiPackageFill } from "react-icons/pi";
 import { IoMdSettings } from "react-icons/io";
 import { IoExit } from "react-icons/io5";
 import { BiSolidUser } from "react-icons/bi";
+import { RiShutDownLine } from "react-icons/ri";
 
 export function getMenuItems(routeFn) {
     const r = typeof routeFn === "function" ? routeFn : () => "#";
@@ -20,7 +21,7 @@ export function getFooterItems(routeFn) {
     return [
         { name: "Profile", iconComponent: BiSolidUser, href: r("profile.index"), activeWhen: "profile.index", method: "get" },
         { name: "Settings", iconComponent: IoMdSettings, href: r("profile.edit"), activeWhen: "profile.edit", method: "get" },
-        { name: "Sign Out", iconComponent: IoExit, href: r("logout"), activeWhen: "logout", method: "post" },
+        { name: "Exit", iconComponent: IoExit, href: r("logout"), activeWhen: "logout", method: "post" },
     ];
 }
 

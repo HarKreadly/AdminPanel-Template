@@ -10,18 +10,15 @@ export default function AppAside({ collapsed }) {
 
     return (
         <aside className={asideClasses}>
-            <hr className="opacity-0  transition-all duration-300" />
-
+    
             {/* Logo / Branding */}
             <Logo collapsed={collapsed} />
 
             {/* Menu */}
             <Section items={getMenuItems(route)} collapsed={collapsed} className="flex-1 px-1 mt-4 space-y-2" />
 
-            <hr className="dark:opacity-30 opacity-100 transition-all duration-300" />
-
             {/* Footer Items */}
-            <Section items={getFooterItems(route)} collapsed={collapsed} className="px-1 mt-6 mb-4 space-y-2" />
+            <Section items={getFooterItems(route)} collapsed={collapsed} className="px-1 mt-4 mb-4 space-y-2 transition-all duration-300" />
         </aside>
     );
 }

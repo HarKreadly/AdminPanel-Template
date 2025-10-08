@@ -31,7 +31,7 @@ export default function AppNavbar({ collapsed, toggleSidebar, header, notificati
                 {/* Sidebar toggle button */}
                 <SidebarToggle collapsed={collapsed} onToggle={toggleSidebar} />
 
-                <div className="text-xl font-semibold text-zinc-800 dark:text-white">
+                <div className="text-xl font-semibold text-zinc-800 dark:text-white capitalize">
                     {header}
                 </div>
             </div>

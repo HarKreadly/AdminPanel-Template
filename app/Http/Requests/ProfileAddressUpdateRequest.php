@@ -22,10 +22,12 @@ class ProfileAddressUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "country"=> "required|string|max:255",
-            "city"=> "required|string|max:255",
-            "province"=> "required|string|max:255",
-            "address"=> "required|string|max:500",
+            "country"=> "nullable|string|max:255",
+            "city"=> "nullable|string|max:255",
+            "province"=> "nullable|string|max:255",
+            "address"=> "nullable|string|max:500",
+            "zip_code"=> "nullable|string|max:20",
+            "time_zone"=> "nullable|string|max:100",
         ];
     }
 }

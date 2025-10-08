@@ -38,11 +38,12 @@ return new class extends Migration
             $table->string('province')->nullable();
             $table->string('address')->nullable();
             $table->string('zip_code')->nullable();
+            $table->string('time_zone')->nullable();
 
             // Role
             $table->enum('role', ['user', 'company', 'admin'])->default('user');
-            $table->enum('status', ['active', 'inactive'])->default('active');
-            $table->enum('banned', ['banned','not_banned'])->default('not_banned');
+            $table->enum('status', ['active', 'inactive', 'banned'])->default('active');
+            $table->boolean('verified')->default(false);
 
             $table->rememberToken();
             $table->timestamps();

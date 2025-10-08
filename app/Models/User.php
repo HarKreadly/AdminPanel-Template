@@ -37,7 +37,7 @@ class User extends Authenticatable
         'zip_code',
         'role',
         'status',
-        'banned',
+        'time_zone',
     ];
 
     /**

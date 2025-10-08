@@ -13,6 +13,8 @@ export default function UpdateAddressInformationForm({ className = "" }) {
         city: user.city || "",
         province: user.province || "",
         address: user.address || "",
+        zip_code: user.zip_code || "",
+        time_zone: user.time_zone || "",
     };
 
     const { data, setData, patch, errors, processing, recentlySuccessful } =
@@ -23,7 +25,9 @@ export default function UpdateAddressInformationForm({ className = "" }) {
 
     const submit = (e) => {
         e.preventDefault();
-        patch(route("profile.address.update"));
+        patch(route("profile.address.update"), {
+            preserveScroll: true,
+        });
     };
 
     return (
@@ -109,7 +113,7 @@ export default function UpdateAddressInformationForm({ className = "" }) {
                             value={data.city}
                             onChange={(e) => setData("city", e.target.value)}
                             autoComplete="address-level2"
-                            placeholder="City"
+                            placeholder="Input your city"
                         />
                         <InputError className="mt-2" message={errors.city} />
                     </div>
@@ -124,7 +128,7 @@ export default function UpdateAddressInformationForm({ className = "" }) {
                             value={data.province}
                             onChange={(e) => setData("province", e.target.value)}
                             autoComplete="address-level1"
-                            placeholder="Province/State"
+                            placeholder="Input your Province/State"
                         />
                         <InputError className="mt-2" message={errors.province} />
                     </div>
@@ -137,9 +141,118 @@ export default function UpdateAddressInformationForm({ className = "" }) {
                             value={data.address}
                             onChange={(e) => setData("address", e.target.value)}
                             autoComplete="street-address"
-                            placeholder="Address"
+                            placeholder="Input your address"
                         />
                         <InputError className="mt-2" message={errors.address} />
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <InputLabel htmlFor="zip_code" value="Zip Code" />
+                        <TextInput
+                            id="zip_code"
+                            className="mt-1 block w-full"
+                            value={data.zip_code}
+                            onChange={(e) => setData("zip_code", e.target.value)}
+                            autoComplete="postal-code"
+                            placeholder="Input your zip code"
+                        />
+                        <InputError className="mt-2" message={errors.zip_code} />
+                    </div>
+
+                    <div>
+                        <div className="flex items-center justify-between mb-1">
+                            <InputLabel htmlFor="time_zone" value="Timezone" />
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    const detectedTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+                                    setData("time_zone", detectedTimezone);
+                                }}
+                                className="text-xs text-blue-600 dark:text-blue-400 hover:underline"
+                            >
+                                Auto-detect
+                            </button>
+                        </div>
+                        <select
+                            id="time_zone"
+                            className="mt-1 block w-full border-zinc-300 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300 focus:border-blue-500 dark:focus:border-blue-600 focus:ring-blue-500 dark:focus:ring-blue-600 rounded-md shadow-sm"
+                            value={data.time_zone}
+                            onChange={(e) => setData("time_zone", e.target.value)}
+                        >
+                            <option value="">Select timezone</option>
+                            <optgroup label="Common Timezones">
+                                <option value="UTC">UTC (Coordinated Universal Time)</option>
+                                <option value="America/New_York">Eastern Time (US & Canada)</option>
+                                <option value="America/Chicago">Central Time (US & Canada)</option>
+                                <option value="America/Denver">Mountain Time (US & Canada)</option>
+                                <option value="America/Los_Angeles">Pacific Time (US & Canada)</option>
+                                <option value="America/Anchorage">Alaska</option>
+                                <option value="Pacific/Honolulu">Hawaii</option>
+                                <option value="Europe/London">London</option>
+                                <option value="Europe/Paris">Paris, Berlin, Rome</option>
+                                <option value="Europe/Athens">Athens, Istanbul</option>
+                                <option value="Europe/Moscow">Moscow</option>
+                                <option value="Asia/Dubai">Dubai</option>
+                                <option value="Asia/Karachi">Karachi</option>
+                                <option value="Asia/Kolkata">Mumbai, Kolkata, New Delhi</option>
+                                <option value="Asia/Dhaka">Dhaka</option>
+                                <option value="Asia/Bangkok">Bangkok, Jakarta</option>
+                                <option value="Asia/Singapore">Singapore</option>
+                                <option value="Asia/Hong_Kong">Hong Kong, Beijing</option>
+                                <option value="Asia/Tokyo">Tokyo, Osaka</option>
+                                <option value="Australia/Sydney">Sydney, Melbourne</option>
+                                <option value="Pacific/Auckland">Auckland</option>
+                            </optgroup>
+                            <optgroup label="Americas">
+                                <option value="America/Argentina/Buenos_Aires">Buenos Aires</option>
+                                <option value="America/Bogota">Bogota</option>
+                                <option value="America/Caracas">Caracas</option>
+                                <option value="America/Lima">Lima</option>
+                                <option value="America/Mexico_City">Mexico City</option>
+                                <option value="America/Santiago">Santiago</option>
+                                <option value="America/Sao_Paulo">São Paulo</option>
+                                <option value="America/Toronto">Toronto</option>
+                            </optgroup>
+                            <optgroup label="Europe">
+                                <option value="Europe/Amsterdam">Amsterdam</option>
+                                <option value="Europe/Brussels">Brussels</option>
+                                <option value="Europe/Dublin">Dublin</option>
+                                <option value="Europe/Lisbon">Lisbon</option>
+                                <option value="Europe/Madrid">Madrid</option>
+                                <option value="Europe/Stockholm">Stockholm</option>
+                                <option value="Europe/Vienna">Vienna</option>
+                                <option value="Europe/Warsaw">Warsaw</option>
+                                <option value="Europe/Zurich">Zurich</option>
+                            </optgroup>
+                            <optgroup label="Asia">
+                                <option value="Asia/Baghdad">Baghdad</option>
+                                <option value="Asia/Baku">Baku</option>
+                                <option value="Asia/Jerusalem">Jerusalem</option>
+                                <option value="Asia/Kuwait">Kuwait</option>
+                                <option value="Asia/Manila">Manila</option>
+                                <option value="Asia/Riyadh">Riyadh</option>
+                                <option value="Asia/Seoul">Seoul</option>
+                                <option value="Asia/Shanghai">Shanghai</option>
+                                <option value="Asia/Taipei">Taipei</option>
+                                <option value="Asia/Tehran">Tehran</option>
+                            </optgroup>
+                            <optgroup label="Africa">
+                                <option value="Africa/Cairo">Cairo</option>
+                                <option value="Africa/Johannesburg">Johannesburg</option>
+                                <option value="Africa/Lagos">Lagos</option>
+                                <option value="Africa/Nairobi">Nairobi</option>
+                            </optgroup>
+                            <optgroup label="Australia & Pacific">
+                                <option value="Australia/Adelaide">Adelaide</option>
+                                <option value="Australia/Brisbane">Brisbane</option>
+                                <option value="Australia/Perth">Perth</option>
+                                <option value="Pacific/Fiji">Fiji</option>
+                                <option value="Pacific/Guam">Guam</option>
+                            </optgroup>
+                        </select>
+                        <InputError className="mt-2" message={errors.time_zone} />
                     </div>
                 </div>
 

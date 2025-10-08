@@ -16,7 +16,7 @@ export default function UserDropdown({ darkMode, setDarkMode }) {
         <div className="relative" ref={ref}>
             <button
                 onClick={() => setOpen((v) => !v)}
-                className="flex items-center justify-center w-10 h-10 rounded-full bg-zinc-200 dark:bg-zinc-800"
+                className="flex items-center justify-center w-10 h-10 rounded-full bg-zinc-100 dark:bg-zinc-900"
             >
                 <img
                     src={profilePicture}
