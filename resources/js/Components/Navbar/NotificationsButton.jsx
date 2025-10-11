@@ -19,7 +19,7 @@ export default function NotificationsButton({
         <>
             <button
                 onClick={onToggle}
-                className="p-2 rounded-full bg-zinc-50 dark:bg-zinc-950 hover:bg-zinc-100 dark:hover:bg-zinc-800 relative"
+                className="p-2 rounded-full bg-zinc-50 dark:bg-zinc-900 hover:bg-zinc-100 dark:hover:bg-zinc-800 relative"
             >
                 <IoNotifications className="w-5 h-5 text-zinc-600 dark:text-zinc-300" />
                 {count > 0 && (

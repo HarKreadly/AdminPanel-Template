@@ -4,9 +4,9 @@ import UpdatePasswordForm from "./UpdatePasswordForm";
 export default function PasswordSection({ openAccordion, toggleAccordion }) {
     return (
         <AccordionItem
-            id="password"
+            id="security"
             title="Update Password"
-            isOpen={openAccordion.includes("password")}
+            isOpen={openAccordion.includes("security")}
             onToggle={toggleAccordion}
         >
             <UpdatePasswordForm className="max-w-xl" />

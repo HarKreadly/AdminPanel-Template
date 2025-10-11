@@ -4,6 +4,8 @@ import PrimaryButton from "@/Components/PrimaryButton";
 import TextInput from "@/Components/TextInput";
 import { Transition } from "@headlessui/react";
 import { useForm, usePage } from "@inertiajs/react";
+import InputWithIcon from "@/Components/InputWithIcon";
+import { FaMapMarkerAlt } from "react-icons/fa";
 
 export default function UpdateAddressInformationForm({ className = "" }) {
     const user = usePage().props.auth.user;
@@ -150,10 +152,14 @@ export default function UpdateAddressInformationForm({ className = "" }) {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <InputLabel htmlFor="zip_code" value="Zip Code" />
-                        <TextInput
+                        <InputWithIcon 
+                            icon={<FaMapMarkerAlt  className="text-zinc-400 dark:text-zinc-600"/>}
                             id="zip_code"
                             className="mt-1 block w-full"
                             value={data.zip_code}
+                            maxLength={5}
+                            max={99999}
+                            type="number"
                             onChange={(e) => setData("zip_code", e.target.value)}
                             autoComplete="postal-code"
                             placeholder="Input your zip code"
@@ -177,7 +183,7 @@ export default function UpdateAddressInformationForm({ className = "" }) {
                         </div>
                         <select
                             id="time_zone"
-                            className="mt-1 block w-full border-zinc-300 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300 focus:border-blue-500 dark:focus:border-blue-600 focus:ring-blue-500 dark:focus:ring-blue-600 rounded-md shadow-sm"
+                            className="mt-1 rounded-md bg-zinc-50 dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-200 border-gray-300 shadow-sm focus:border-zinc-500 focus:ring-zinc-500 block w-full p-2.5"
                             value={data.time_zone}
                             onChange={(e) => setData("time_zone", e.target.value)}
                         >

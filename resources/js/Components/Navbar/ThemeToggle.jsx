@@ -11,7 +11,7 @@ export default function ThemeToggle({ darkMode, setDarkMode }) {
     return (
         <button
             onClick={() => setDarkMode(!darkMode)}
-            className="p-2 rounded-full bg-zinc-50 dark:bg-zinc-950 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+            className="p-2 rounded-full bg-zinc-50 dark:bg-zinc-900 hover:bg-zinc-100 dark:hover:bg-zinc-800"
             aria-pressed={darkMode}
             aria-label={darkMode ? "Disable dark mode" : "Enable dark mode"}
         >

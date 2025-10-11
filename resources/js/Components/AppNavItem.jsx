@@ -29,14 +29,18 @@ export default function AppNavItem({ item, collapsed }) {
                 <div
                     className={iconClasses}
                     style={{
-                        transform: collapsed ? "translateX(0)" : "translateX(0)",
+                        transform: collapsed
+                            ? "translateX(0)"
+                            : "translateX(0)",
                     }}
                 >
                     {Icon ? <Icon className="w-5 h-5" /> : null}
                 </div>
                 <span
                     className={`ml-3 overflow-hidden transition-all duration-300 ${
-                        collapsed ? "max-w-0 opacity-0" : "max-w-[200px] opacity-100"
+                        collapsed
+                            ? "max-w-0 opacity-0"
+                            : "max-w-[200px] opacity-100"
                     }`}
                 >
                     {item.name}
@@ -45,4 +49,3 @@ export default function AppNavItem({ item, collapsed }) {
         </li>
     );
 }
-

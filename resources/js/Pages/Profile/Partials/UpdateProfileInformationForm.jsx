@@ -6,6 +6,7 @@ import InputWithIcon from "@/Components/InputWithIcon";
 import { Transition } from "@headlessui/react";
 import { Link, useForm, usePage } from "@inertiajs/react";
 import { HiMail } from "react-icons/hi";
+import { MdOutlineSmartphone } from "react-icons/md";
 
 export default function UpdateProfileInformation({
     mustVerifyEmail,
@@ -143,7 +144,7 @@ export default function UpdateProfileInformation({
 
                     <div>
                         <InputLabel htmlFor="phone" value="Phone" />
-                        <TextInput
+                        <InputWithIcon
                             id="phone"
                             type="tel"
                             className="mt-1 block w-full"
@@ -151,6 +152,9 @@ export default function UpdateProfileInformation({
                             onChange={(e) => setData("phone", e.target.value)}
                             autoComplete="tel"
                             placeholder="Input your phone"
+                            icon={
+                                <MdOutlineSmartphone className="w-5 h-5 text-zinc-500 dark:text-zinc-400" />
+                            }
                         />
                         <InputError className="mt-2" message={errors.phone} />
                     </div>

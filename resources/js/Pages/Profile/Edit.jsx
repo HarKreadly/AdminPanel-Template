@@ -38,7 +38,7 @@ export default function Edit({ mustVerifyEmail, status }) {
                 </h2>
             }
         >
-            <Head title="Profile" />
+            <Head title="Settings" />
 
             <div className="py-8 ">
                 <div className="mx-auto px-4 sm:px-6 lg:px-8">

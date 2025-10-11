@@ -26,7 +26,7 @@ export default function AppNavbar({ collapsed, toggleSidebar, header, notificati
     }, [darkMode]);
 
     return (
-        <nav className="flex justify-between items-center px-4 py-3 bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-700 sticky top-0 z-10 transition-all duration-300">
+        <nav className="flex justify-between rounded-md items-center px-4 py-3 bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-700 sticky top-0 z-10 transition-all duration-300">
             <div className="flex items-center space-x-4">
                 {/* Sidebar toggle button */}
                 <SidebarToggle collapsed={collapsed} onToggle={toggleSidebar} />

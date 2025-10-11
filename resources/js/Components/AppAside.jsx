@@ -5,7 +5,7 @@ import { getMenuItems, getFooterItems } from "./Aside/items";
 
 export default function AppAside({ collapsed }) {
     const asideClasses = `fixed top-0 left-0 h-screen bg-white dark:bg-zinc-900 border-r border-zinc-200 dark:border-zinc-700 transition-all duration-300 ${
-        collapsed ? "w-16" : "w-64"
+        collapsed ? "w-16 " : "w-64"
     } flex flex-col`;
 
     return (

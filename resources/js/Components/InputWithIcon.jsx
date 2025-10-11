@@ -6,7 +6,9 @@ export default function InputWithIcon({
     placeholder = "",
     required = false,
     autoComplete,
+    max,
     className = "",
+    maxLength,
     icon,
     ...props
 }) {
@@ -21,6 +23,8 @@ export default function InputWithIcon({
                 type={type}
                 id={id}
                 value={value}
+                maxLength={maxLength}
+                max={max}
                 onChange={onChange}
                 placeholder={placeholder}
                 required={required}
