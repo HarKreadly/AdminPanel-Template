@@ -91,15 +91,13 @@ class ProfileController extends Controller
     /**
      * Update the user's profile address.
      */
-    public function updateAddressInformation(ProfileAddressUpdateRequest $request): RedirectResponse
+    public function updateAddressInformation(ProfileAddressUpdateRequest $request)
     {
         $user = $request->user();
 
         $user->fill($request->validated());
 
         $user->save();
-
-        return Redirect::route('profile.edit');
     }
 
 

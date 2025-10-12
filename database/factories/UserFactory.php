@@ -23,11 +23,37 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
+        $gender = $this->faker->randomElement(['male', 'female', 'other']);
+        $firstName = $this->faker->firstName($gender);
+        $lastName = $this->faker->lastName();
+
         return [
-            'name' => fake()->name(),
-            'email' => fake()->unique()->safeEmail(),
+            'name' => $firstName . ' ' . $lastName,
+            'first_name' => $firstName,
+            'middle_name' => $this->faker->optional()->firstName(),
+            'last_name' => $lastName,
+            'email' => $this->faker->unique()->safeEmail(),
             'email_verified_at' => now(),
-            'password' => static::$password ??= Hash::make('password'),
+            'password' => Hash::make('password'), // change as needed
+
+            'phone' => $this->faker->optional()->phoneNumber(),
+            'date_of_birth' => $this->faker->optional()->date(),
+            'gender' => $gender,
+
+            'profile_picture' => $this->faker->optional()->imageUrl(),
+            'bio' => $this->faker->optional()->paragraph(),
+
+            'country' => $this->faker->optional()->country(),
+            'city' => $this->faker->optional()->city(),
+            'province' => $this->faker->optional()->state(),
+            'address' => $this->faker->optional()->address(),
+            'zip_code' => $this->faker->optional()->postcode(),
+            'time_zone' => $this->faker->optional()->timezone(),
+
+            'role' => $this->faker->randomElement(['user', 'company', 'admin']),
+            'status' => $this->faker->randomElement(['active', 'inactive', 'banned']),
+            'verified' => $this->faker->boolean(),
+
             'remember_token' => Str::random(10),
         ];
     }
@@ -37,7 +63,7 @@ class UserFactory extends Factory
      */
     public function unverified(): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn(array $attributes) => [
             'email_verified_at' => null,
         ]);
     }

@@ -11,7 +11,7 @@ export function getMenuItems(routeFn) {
     const r = typeof routeFn === "function" ? routeFn : () => "#";
     return [
         { name: "Dashboard", iconComponent: MdSpaceDashboard, href: r("dashboard"), activeWhen: "dashboard" },
-        { name: "Users", iconComponent: HiUsers, href: "#", activeWhen: "users.*" },
+        { name: "Users", iconComponent: HiUsers, href: r("users.index"), activeWhen: "users.*" },
         { name: "Products", iconComponent: PiPackageFill, href: "#", activeWhen: "products.*" },
     ];
 }
@@ -20,7 +20,7 @@ export function getFooterItems(routeFn) {
     const r = typeof routeFn === "function" ? routeFn : () => "#";
     return [
         { name: "Profile", iconComponent: BiSolidUser, href: r("profile.index"), activeWhen: "profile.index", method: "get" },
-        { name: "Settings", iconComponent: IoMdSettings, href: r("profile.edit"), activeWhen: "profile.edit", method: "get" },
+        { name: "Settings", iconComponent: IoMdSettings, href: r("settings.edit"), activeWhen: "settings.edit", method: "get" },
         { name: "Exit", iconComponent: IoExit, href: r("logout"), activeWhen: "logout", method: "post" },
     ];
 }

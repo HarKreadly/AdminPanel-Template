@@ -45,7 +45,7 @@ export default function UserDropdown({ darkMode, setDarkMode }) {
                             Profile
                         </Link>
                         <Link
-                            href={route("profile.edit")}
+                            href={route("settings.edit")}
                             className="block px-4 py-2 text-sm text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-700"
                             onClick={close}
                         >
