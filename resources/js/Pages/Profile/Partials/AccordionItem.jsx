@@ -10,7 +10,7 @@ export default function AccordionItem({
     className = "bg-white",
 }) {
     return (
-        <div className="border border-zinc-200 dark:border-zinc-800 rounded-md overflow-hidden">
+        <div className="border border-zinc-200 dark:border-zinc-700 rounded-md overflow-hidden">
             <button
                 onClick={() => onToggle(id)}
                 className={`flex justify-between items-center w-full p-4 font-medium ${titleClassName} bg-zinc-50 dark:bg-zinc-900 hover:bg-zinc-200/80 dark:hover:bg-zinc-950 transition`}

@@ -251,7 +251,7 @@ export default function UsersTable({ users: initialUsers = [] }) {
                 <div className="bg-white dark:bg-zinc-900 rounded-lg shadow-sm border border-zinc-200 dark:border-zinc-700 overflow-hidden flex flex-col">
                     <div>
                         {/* Header with Filters */}
-                        <div className="p-4 border-b border-gray-200 dark:border-zinc-800">
+                        <div className="p-4 border-b bg-gray-50 dark:bg-zinc-700 border-gray-200 dark:border-zinc-800">
                             <div className="flex items-center gap-3 flex-wrap">
                                 <SearchInput
                                     value={searchTerm}
@@ -335,7 +335,7 @@ export default function UsersTable({ users: initialUsers = [] }) {
 
                         {/* Empty State */}
                         {paginatedUsers.length === 0 && (
-                            <div className="text-center py-12">
+                            <div className="text-center py-12 ">
                                 <p className="text-gray-600 dark:text-gray-400">
                                     No users found
                                 </p>

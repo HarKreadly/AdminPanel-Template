@@ -20,7 +20,7 @@ export default function TableHeader({
                             paginatedUsers.length > 0
                         }
                         onChange={handleSelectAll}
-                        className="rounded border-gray-300 dark:border-zinc-700 w-4 h-4"
+                        className="rounded border-gray-300 dark:border-zinc-700 dark:bg-zinc-400 w-4 h-4"
                     />
                 </th>
                 {visibleColumns.id && (

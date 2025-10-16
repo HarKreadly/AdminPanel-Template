@@ -9,16 +9,77 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\DB;
 use App\Http\Requests\ProfileUpdateRequest;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Http\Requests\ProfileAddressUpdateRequest;
+use Jenssegers\Agent\Agent;
 
 class ProfileController extends Controller
 {
-    public function index(): Response
+    public function index(Request $request): Response
     {
-        return Inertia::render('Profile/Index');
+        $user = Auth::user();
+
+        // Fetch and parse user sessions
+        $sessions = DB::table('sessions')
+            ->where('user_id', $user->id)
+            ->orderBy('last_activity', 'desc')
+            ->get();
+
+        // Process sessions to extract device/browser info
+        $activeSessions = $sessions->map(function ($session) use ($request) {
+            $agent = new Agent();
+            $agent->setUserAgent($session->user_agent);
+
+            return [
+                'id' => $session->id,
+                'ip_address' => $session->ip_address,
+                'is_current_device' => $session->id === $request->session()->getId(),
+                'last_activity' => $session->last_activity,
+                'agent' => [
+                    'platform' => $agent->platform() ?: 'Unknown',
+                    'browser' => $agent->browser() ?: 'Unknown',
+                ],
+            ];
+        });
+
+        return Inertia::render('Profile/Index', [
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'first_name' => $user->first_name,
+                'middle_name' => $user->middle_name,
+                'last_name' => $user->last_name,
+                'email' => $user->email,
+                'email_verified_at' => $user->email_verified_at?->format('Y-m-d H:i:s'),
+                'phone' => $user->phone,
+                'date_of_birth' => $user->date_of_birth,
+                'gender' => $user->gender,
+                'profile_picture' => $user->profile_picture,
+                'bio' => $user->bio,
+                'country' => $user->country,
+                'city' => $user->city,
+                'province' => $user->province,
+                'address' => $user->address,
+                'zip_code' => $user->zip_code,
+                'time_zone' => $user->time_zone,
+                'role' => $user->role,
+                'status' => $user->status,
+                'verified' => $user->verified,
+                'created_at' => $user->created_at->format('Y-m-d'),
+                'updated_at' => $user->updated_at->format('Y-m-d'),
+                'deleted_at' => $user->deleted_at ? $user->deleted_at->format('Y-m-d') : null,
+            ],
+            'sessions' => $activeSessions,
+            'auth' => [
+                'user' => $user
+            ]
+        ]);
     }
+
+
+
 
 
     /**

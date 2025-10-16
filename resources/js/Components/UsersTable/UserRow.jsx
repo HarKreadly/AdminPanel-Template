@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "@inertiajs/react";
 import { FiPhone, FiMail, FiMoreVertical } from "react-icons/fi";
 
 export default function UserRow({
@@ -147,9 +148,12 @@ export default function UserRow({
                                     onClick={() => setActiveDropdown(false)}
                                 />
                                 <div className="absolute right-0 mt-2 w-40 bg-white dark:bg-zinc-800 rounded-lg shadow-lg border border-gray-200 dark:border-zinc-700 py-1 z-50">
-                                    <button className="w-full px-4 py-2 text-left text-sm hover:bg-gray-50 dark:hover:bg-zinc-700 dark:text-gray-200 transition-colors duration-150">
+                                    <Link
+                                        href={`/admin/users/${user.id}`}
+                                        className="block w-full px-4 py-2 text-left text-sm hover:bg-gray-50 dark:hover:bg-zinc-700 dark:text-gray-200 transition-colors duration-150"
+                                    >
                                         View Profile
-                                    </button>
+                                    </Link>
                                     <button className="w-full px-4 py-2 text-left text-sm hover:bg-gray-50 dark:hover:bg-zinc-700 dark:text-gray-200 transition-colors duration-150">
                                         Edit
                                     </button>

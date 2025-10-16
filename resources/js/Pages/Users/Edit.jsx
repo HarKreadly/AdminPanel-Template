@@ -1,7 +1,14 @@
-import React from 'react'
+import { Link } from "@inertiajs/react";
+import React from "react";
+import AppLayout from "@/Layouts/AppLayout";
+import { Head } from "@inertiajs/react";
+import Breadcrumb from "@/Components/Breadcrumb";
+import { FaPlus } from "react-icons/fa";
+import { LuDownload } from "react-icons/lu";
+
 
 export default function Edit() {
-  return (
+    return (
         <AppLayout header={<h2>Users</h2>}>
             <Head title="Users" />
 
@@ -14,7 +21,7 @@ export default function Edit() {
                             { label: "Edit", href: "/users/edit" },
                         ]}
                     />
-                    
+
                     <div className="flex flex-col mt-6 border border-zinc-200 dark:border-zinc-700 rounded-md overflow-hidden ">
                         {/* Header Section */}
                         <div className="px-5 py-4 text-lg font-semibold text-gray-900 bg-gray-50 dark:text-white dark:bg-zinc-700">
@@ -36,17 +43,15 @@ export default function Edit() {
                                     Export data
                                 </button>
 
-                                <button className="bg-orange-500 hover:bg-orange-600 text-white font-medium py-2 px-4 rounded flex items-center gap-2">
+                                <Link className="bg-orange-500 hover:bg-orange-600 text-white font-medium py-2 px-4 rounded flex items-center gap-2" href={route("users.create")}>
                                     <FaPlus />
                                     Add User
-                                </button>
+                                </Link>
                             </div>
                         </div>
                     </div>
-
-
                 </div>
             </div>
         </AppLayout>
-  )
+    );
 }

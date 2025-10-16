@@ -30,8 +30,8 @@ export default function Pagination({
                         title="First page"
                     >
                         <div className="flex">
-                            <FiChevronDown className="w-3 h-3 rotate-90" />
-                            <FiChevronDown className="w-3 h-3 rotate-90 -ml-1.5" />
+                            <FiChevronDown className="w-3 h-3 rotate-90 dark:text-white" />
+                            <FiChevronDown className="w-3 h-3 rotate-90 -ml-1.5 dark:text-white" />
                         </div>
                     </button>
                     <button
@@ -42,7 +42,7 @@ export default function Pagination({
                         className="p-2 hover:bg-gray-200 dark:hover:bg-zinc-700 rounded disabled:opacity-30 disabled:cursor-not-allowed transition-colors duration-150"
                         title="Previous page"
                     >
-                        <FiChevronDown className="w-4 h-4 rotate-90" />
+                        <FiChevronDown className="w-4 h-4 dark:text-white rotate-90" />
                     </button>
                     <span className="px-4 text-gray-700 dark:text-gray-300 font-medium">
                         Page {currentPage} of {totalPages || 1}
@@ -59,19 +59,19 @@ export default function Pagination({
                         className="p-2 hover:bg-gray-200 dark:hover:bg-zinc-700 rounded disabled:opacity-30 disabled:cursor-not-allowed transition-colors duration-150"
                         title="Next page"
                     >
-                        <FiChevronDown className="w-4 h-4 -rotate-90" />
+                        <FiChevronDown className="w-4 h-4 -rotate-90 dark:text-white" />
                     </button>
                     <button
                         onClick={() => setCurrentPage(totalPages)}
                         disabled={
                             currentPage === totalPages || totalPages === 0
                         }
-                        className="p-2 hover:bg-gray-200 dark:hover:bg-zinc-700 rounded disabled:opacity-30 disabled:cursor-not-allowed transition-colors duration-150"
+                        className="p-2  hover:bg-gray-200 dark:hover:bg-zinc-700 rounded disabled:opacity-30 disabled:cursor-not-allowed transition-colors duration-150"
                         title="Last page"
                     >
                         <div className="flex">
-                            <FiChevronDown className="w-3 h-3 -rotate-90" />
-                            <FiChevronDown className="w-3 h-3 -rotate-90 -ml-1.5" />
+                            <FiChevronDown className="w-3 h-3 -rotate-90 dark:text-white" />
+                            <FiChevronDown className="w-3 h-3 -rotate-90 -ml-1.5 dark:text-white" />
                         </div>
                     </button>
                 </div>

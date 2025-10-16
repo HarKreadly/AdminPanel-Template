@@ -72,6 +72,13 @@ class UserController extends Controller
         ]);
     }
 
+    public function create()
+    {
+        return Inertia::render('Users/Create');
+    }
+
+
+
     public function view($id)
     {
         $user = User::findOrFail($id);
@@ -92,5 +99,4 @@ class UserController extends Controller
         $user->delete();
         return redirect()->route('users.index');
     }
-    
 }
