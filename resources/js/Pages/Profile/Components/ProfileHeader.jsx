@@ -190,7 +190,7 @@ export default function ProfileHeader({ user }) {
                                     <HiPencil className="w-4 h-4" />
                                     Edit
                                 </Link>
-                                <div className="relative">
+                                {/* <div className="relative">
                                     <button
                                         onClick={() =>
                                             setShowActionsMenu(!showActionsMenu)
@@ -235,7 +235,7 @@ export default function ProfileHeader({ user }) {
                                             </div>
                                         </>
                                     )}
-                                </div>
+                                </div> */}
                             </div>
                         </div>
                         {user.bio && (

@@ -145,7 +145,6 @@ export default function ProfilePictureAccordion() {
                         leave="transition ease-in-out"
                         leaveTo="opacity-0"
                     >
-                        
                         <p className="text-sm text-green-600 dark:text-green-400">
                             Saved.
                         </p>

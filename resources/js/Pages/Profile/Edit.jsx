@@ -43,7 +43,6 @@ export default function Edit({ mustVerifyEmail, status }) {
                 <div className="mx-auto px-4 sm:px-6 lg:px-8">
                     <Breadcrumb
                         items={[
-                            { label: "Dashboard", href: "/dashboard" },
                             {
                                 label: "Profile Settings",
                                 href: "/settings/edit",
@@ -51,30 +50,29 @@ export default function Edit({ mustVerifyEmail, status }) {
                         ]}
                     />
 
-                    {/* Settings Overview Card */}
-                    <div className="mt-6 bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-700 overflow-hidden">
-                        <div className="px-6 py-4 bg-gray-50 dark:bg-zinc-800 border-b border-zinc-200 dark:border-zinc-700">
-                            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                                Profile Management
-                            </h3>
-                            <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                                Manage your profile information, security
-                                settings, and account preferences
-                            </p>
-                        </div>
+                    {/* Settings Content */}
+                    <div className="mt-6">
+                        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                            <SettingsSidebar
+                                sections={sections}
+                                selectedSection={selectedSection}
+                                onSectionChange={setSelectedSection}
+                                getSectionIcon={getSectionIcon}
+                            />
 
-                        <div className="p-6">
-                            <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-                                <SettingsSidebar
-                                    sections={sections}
-                                    selectedSection={selectedSection}
-                                    onSectionChange={setSelectedSection}
-                                    getSectionIcon={getSectionIcon}
-                                />
-
-                                <div className="lg:col-span-3 space-y-6">
-                                    {selectedSection === "profile" && (
-                                        <div className="">
+                            <div className="lg:col-span-3 space-y-6">
+                                {selectedSection === "profile" && (
+                                    <div>
+                                        <div className="px-6 py-4 bg-white rounded-md dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700">
+                                            <h4 className="text-lg font-semibold text-gray-900 dark:text-white">
+                                                Profile Information
+                                            </h4>
+                                            <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                                                Manage your profile picture, personal
+                                                information, and address details
+                                            </p>
+                                        </div>
+                                        <div className="py-6">
                                             <ProfileSection
                                                 mustVerifyEmail={
                                                     mustVerifyEmail
@@ -82,42 +80,42 @@ export default function Edit({ mustVerifyEmail, status }) {
                                                 status={status}
                                             />
                                         </div>
-                                    )}
+                                    </div>
+                                )}
 
-                                    {selectedSection === "security" && (
-                                        <div className="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-700 overflow-hidden">
-                                            <div className="px-6 py-4 bg-gray-50 dark:bg-zinc-800 border-b border-zinc-200 dark:border-zinc-700">
-                                                <h4 className="text-lg font-semibold text-gray-900 dark:text-white">
-                                                    Security Settings
-                                                </h4>
-                                                <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                                                    Manage your password and
-                                                    security preferences
-                                                </p>
-                                            </div>
-                                            <div className="p-6">
-                                                <PasswordSection />
-                                            </div>
+                                {selectedSection === "security" && (
+                                    <div>
+                                        <div className="px-6 py-4 bg-white rounded-md dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700">
+                                            <h4 className="text-lg font-semibold text-gray-900 dark:text-white">
+                                                Security Settings
+                                            </h4>
+                                            <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                                                Manage your password and
+                                                security preferences
+                                            </p>
                                         </div>
-                                    )}
+                                        <div className="py-6">
+                                            <PasswordSection />
+                                        </div>
+                                    </div>
+                                )}
 
-                                    {selectedSection === "delete" && (
-                                        <div className="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-700 overflow-hidden">
-                                            <div className="px-6 py-4 bg-gray-50 dark:bg-zinc-800 border-b border-zinc-200 dark:border-zinc-700">
-                                                <h4 className="text-lg font-semibold text-gray-900 dark:text-white">
-                                                    Account Management
-                                                </h4>
-                                                <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                                                    Manage your account settings
-                                                    and deletion options
-                                                </p>
-                                            </div>
-                                            <div className="p-6">
-                                                <DeleteAccountSection />
-                                            </div>
+                                {selectedSection === "delete" && (
+                                    <div>
+                                        <div className="px-6 py-4 bg-white rounded-md dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700">
+                                            <h4 className="text-lg font-semibold text-gray-900 dark:text-white">
+                                                Account Management
+                                            </h4>
+                                            <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                                                Manage your account settings
+                                                and deletion options
+                                            </p>
                                         </div>
-                                    )}
-                                </div>
+                                        <div className="py-6">
+                                            <DeleteAccountSection />
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </div>

@@ -1,57 +1,773 @@
-import { Link } from "@inertiajs/react";
-import React from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Head, router, useForm } from "@inertiajs/react";
 import AppLayout from "@/Layouts/AppLayout";
-import { Head } from "@inertiajs/react";
 import Breadcrumb from "@/Components/Breadcrumb";
-import { FaPlus } from "react-icons/fa";
-import { LuDownload } from "react-icons/lu";
+import InputLabel from "@/Components/InputLabel";
+import InputError from "@/Components/InputError";
+import TextInput from "@/Components/TextInput";
+import PrimaryButton from "@/Components/PrimaryButton";
+import SecondaryButton from "@/Components/SecondaryButton";
+import Checkbox from "@/Components/Checkbox";
+import ProfileImageEditor from "@/Pages/Profile/ProfileImageEditor";
+import CropperModal from "@/Pages/Profile/Partials/CropperModal";
 
+export default function Edit({ user }) {
+    const inputRef = useRef(null);
+    const initialProfileUrl = user.profile_picture
+        ? `/storage/${user.profile_picture}`
+        : null;
 
-export default function Edit() {
+    const [previewImage, setPreviewImage] = useState(null);
+    const [croppedPreview, setCroppedPreview] = useState(null);
+    const [existingImage, setExistingImage] = useState(initialProfileUrl);
+    const [showCropper, setShowCropper] = useState(false);
+    const [nameTouched, setNameTouched] = useState(false);
+
+    const { data, setData, put, processing, errors, transform } = useForm({
+        name: user.name || "",
+        first_name: user.first_name || "",
+        middle_name: user.middle_name || "",
+        last_name: user.last_name || "",
+        email: user.email || "",
+        phone: user.phone || "",
+        date_of_birth: user.date_of_birth || "",
+        gender: user.gender || "",
+        bio: user.bio || "",
+        country: user.country || "",
+        city: user.city || "",
+        province: user.province || "",
+        address: user.address || "",
+        zip_code: user.zip_code || "",
+        time_zone: user.time_zone || "",
+        role: user.role || "user",
+        status: user.status || "active",
+        verified: Boolean(user.verified),
+        password: "",
+        password_confirmation: "",
+        profile_picture: null,
+        remove_profile_picture: false,
+    });
+
+    useEffect(() => {
+        if (nameTouched) {
+            return;
+        }
+
+        const suggestion = [data.first_name, data.middle_name, data.last_name]
+            .filter(Boolean)
+            .join(" ")
+            .trim();
+
+        if (suggestion && suggestion !== data.name) {
+            setData("name", suggestion);
+        }
+    }, [
+        data.first_name,
+        data.middle_name,
+        data.last_name,
+        data.name,
+        nameTouched,
+        setData,
+    ]);
+
+    const handleCropApply = useCallback(
+        (blob, previewUrl) => {
+            const file = new File([blob], "profile-picture.jpg", {
+                type: blob.type || "image/jpeg",
+            });
+
+            setCroppedPreview(previewUrl);
+            setPreviewImage(null);
+            setExistingImage(null);
+            setData("profile_picture", file);
+            setData("remove_profile_picture", false);
+            setShowCropper(false);
+        },
+        [setData]
+    );
+
+    const handleCropCancel = useCallback(() => {
+        setShowCropper(false);
+
+        if (!croppedPreview && inputRef.current) {
+            inputRef.current.value = "";
+        }
+
+        setPreviewImage(null);
+    }, [croppedPreview]);
+
+    const handleFileSelected = useCallback(
+        (base64Image) => {
+            setPreviewImage(base64Image);
+            setCroppedPreview(null);
+            setData("remove_profile_picture", false);
+            setShowCropper(true);
+        },
+        [setData]
+    );
+
+    const handleRemoveImage = useCallback(() => {
+        setPreviewImage(null);
+        setCroppedPreview(null);
+        setExistingImage(null);
+        setData("profile_picture", null);
+        setData("remove_profile_picture", true);
+
+        if (inputRef.current) {
+            inputRef.current.value = "";
+        }
+    }, [setData]);
+
+    const handleFieldChange = (field) => (event) => {
+        setData(field, event.target.value);
+    };
+
+    const handleCheckboxChange = (field) => (event) => {
+        setData(field, event.target.checked);
+    };
+
+    const resetTransform = () => {
+        transform((payload) => payload);
+    };
+
+    const handleSubmit = (event) => {
+        event.preventDefault();
+
+        transform((formData) => {
+            const payload = { ...formData };
+
+            if (!payload.profile_picture) {
+                delete payload.profile_picture;
+            }
+
+            if (!payload.password) {
+                delete payload.password;
+                delete payload.password_confirmation;
+            }
+
+            if (!payload.remove_profile_picture) {
+                delete payload.remove_profile_picture;
+            }
+
+            return payload;
+        });
+
+        put(route("users.update", user.id), {
+            forceFormData: true,
+            preserveScroll: true,
+            onSuccess: resetTransform,
+            onError: resetTransform,
+            onFinish: resetTransform,
+        });
+    };
+
+    const handleCancel = () => {
+        router.visit(route("users.index"));
+    };
+
+    const roleOptions = useMemo(
+        () => [
+            { value: "user", label: "User" },
+            { value: "company", label: "Company" },
+            { value: "admin", label: "Admin" },
+        ],
+        []
+    );
+
+    const statusOptions = useMemo(
+        () => [
+            { value: "active", label: "Active" },
+            { value: "inactive", label: "Inactive" },
+            { value: "banned", label: "Banned" },
+        ],
+        []
+    );
+
+    const currentPreview = croppedPreview || previewImage || existingImage;
+
     return (
         <AppLayout header={<h2>Users</h2>}>
-            <Head title="Users" />
+            <Head title="Edit User" />
 
             <div className="py-6">
-                <div className="mx-auto  sm:px-6 lg:px-8">
+                <div className="mx-auto sm:px-6 lg:px-8">
                     <Breadcrumb
                         items={[
-                            { label: "Management", href: "/dashboard" },
                             { label: "Users", href: "/users" },
-                            { label: "Edit", href: "/users/edit" },
+                            { label: "Edit", href: `/users/${user.id}/edit` },
                         ]}
                     />
 
-                    <div className="flex flex-col mt-6 border border-zinc-200 dark:border-zinc-700 rounded-md overflow-hidden ">
-                        {/* Header Section */}
-                        <div className="px-5 py-4 text-lg font-semibold text-gray-900 bg-gray-50 dark:text-white dark:bg-zinc-700">
-                            Our products
-                        </div>
+                    <form
+                        onSubmit={handleSubmit}
+                        className="mt-6 space-y-6"
+                        encType="multipart/form-data"
+                    >
+                        <div className="grid gap-6 lg:grid-cols-4">
+                            <div className="lg:col-span-2 space-y-6">
+                                <div className="border border-zinc-200 dark:border-zinc-700 rounded-md overflow-hidden bg-white dark:bg-zinc-900">
+                                    <div className="px-5 py-4 text-lg font-semibold text-gray-900 bg-gray-50 dark:text-white dark:bg-zinc-700">
+                                        Profile Picture
+                                    </div>
+                                    <div className="p-6 space-y-4">
+                                        <ProfileImageEditor
+                                            image={currentPreview}
+                                            onEdit={() =>
+                                                setShowCropper(
+                                                    Boolean(
+                                                        previewImage ||
+                                                            croppedPreview
+                                                    )
+                                                )
+                                            }
+                                            onRemove={handleRemoveImage}
+                                            onFileSelected={handleFileSelected}
+                                            inputRef={inputRef}
+                                        />
+                                        <InputError
+                                            className="mt-2"
+                                            message={errors.profile_picture}
+                                        />
+                                    </div>
+                                </div>
 
-                        {/* Content + Actions */}
-                        <div className="flex justify-between items-center p-6 bg-white dark:bg-zinc-900">
-                            <p className="text-sm font-normal text-gray-500 dark:text-gray-400 max-w-2xl">
-                                Browse a list of Flowbite products designed to
-                                help you work and play, stay organized, get
-                                answers, keep in touch, grow your business, and
-                                more.
-                            </p>
+                                <div className="border border-zinc-200 dark:border-zinc-700 rounded-md overflow-hidden bg-white dark:bg-zinc-900">
+                                    <div className="px-5 py-4 text-lg font-semibold text-gray-900 bg-gray-50 dark:text-white dark:bg-zinc-700">
+                                        Personal Information
+                                    </div>
+                                    <div className="p-6 space-y-5">
+                                        <div>
+                                            <InputLabel
+                                                htmlFor="name"
+                                                value="Display Name"
+                                            />
+                                            <TextInput
+                                                id="name"
+                                                name="name"
+                                                className="mt-1 block w-full"
+                                                value={data.name}
+                                                onChange={(event) => {
+                                                    setNameTouched(true);
+                                                    setData(
+                                                        "name",
+                                                        event.target.value
+                                                    );
+                                                }}
+                                                placeholder="Enter display name"
+                                            />
+                                            <InputError
+                                                className="mt-2"
+                                                message={errors.name}
+                                            />
+                                        </div>
 
-                            <div className="flex items-center gap-2">
-                                <button className="bg-zinc-100 border border-zinc-200 hover:bg-zinc-200 font-medium py-2 px-4 rounded flex items-center gap-2">
-                                    <LuDownload />
-                                    Export data
-                                </button>
+                                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                            <div>
+                                                <InputLabel
+                                                    htmlFor="first_name"
+                                                    value="First Name"
+                                                />
+                                                <TextInput
+                                                    id="first_name"
+                                                    name="first_name"
+                                                    className="mt-1 block w-full"
+                                                    value={data.first_name}
+                                                    onChange={handleFieldChange(
+                                                        "first_name"
+                                                    )}
+                                                    placeholder="Input first name"
+                                                />
+                                                <InputError
+                                                    className="mt-2"
+                                                    message={errors.first_name}
+                                                />
+                                            </div>
 
-                                <Link className="bg-orange-500 hover:bg-orange-600 text-white font-medium py-2 px-4 rounded flex items-center gap-2" href={route("users.create")}>
-                                    <FaPlus />
-                                    Add User
-                                </Link>
+                                            <div>
+                                                <InputLabel
+                                                    htmlFor="middle_name"
+                                                    value="Middle Name"
+                                                />
+                                                <TextInput
+                                                    id="middle_name"
+                                                    name="middle_name"
+                                                    className="mt-1 block w-full"
+                                                    value={data.middle_name}
+                                                    onChange={handleFieldChange(
+                                                        "middle_name"
+                                                    )}
+                                                    placeholder="Input middle name"
+                                                />
+                                                <InputError
+                                                    className="mt-2"
+                                                    message={errors.middle_name}
+                                                />
+                                            </div>
+
+                                            <div>
+                                                <InputLabel
+                                                    htmlFor="last_name"
+                                                    value="Last Name"
+                                                />
+                                                <TextInput
+                                                    id="last_name"
+                                                    name="last_name"
+                                                    className="mt-1 block w-full"
+                                                    value={data.last_name}
+                                                    onChange={handleFieldChange(
+                                                        "last_name"
+                                                    )}
+                                                    placeholder="Input last name"
+                                                />
+                                                <InputError
+                                                    className="mt-2"
+                                                    message={errors.last_name}
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="border border-zinc-200 dark:border-zinc-700 rounded-md overflow-hidden bg-white dark:bg-zinc-900">
+                                    <div className="px-5 py-4 text-lg font-semibold text-gray-900 bg-gray-50 dark:text-white dark:bg-zinc-700">
+                                        Contact Information
+                                    </div>
+                                    <div className="p-6 space-y-4">
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div>
+                                                <InputLabel
+                                                    htmlFor="email"
+                                                    value="Email"
+                                                />
+                                                <TextInput
+                                                    id="email"
+                                                    name="email"
+                                                    type="email"
+                                                    className="mt-1 block w-full"
+                                                    value={data.email}
+                                                    onChange={handleFieldChange(
+                                                        "email"
+                                                    )}
+                                                    required
+                                                    autoComplete="email"
+                                                    placeholder="name@example.com"
+                                                />
+                                                <InputError
+                                                    className="mt-2"
+                                                    message={errors.email}
+                                                />
+                                            </div>
+
+                                            <div>
+                                                <InputLabel
+                                                    htmlFor="phone"
+                                                    value="Phone"
+                                                />
+                                                <TextInput
+                                                    id="phone"
+                                                    name="phone"
+                                                    type="tel"
+                                                    className="mt-1 block w-full"
+                                                    value={data.phone}
+                                                    onChange={handleFieldChange(
+                                                        "phone"
+                                                    )}
+                                                    autoComplete="tel"
+                                                    placeholder="e.g., +1 555 123 4567"
+                                                />
+                                                <InputError
+                                                    className="mt-2"
+                                                    message={errors.phone}
+                                                />
+                                            </div>
+
+                                            <div>
+                                                <InputLabel
+                                                    htmlFor="date_of_birth"
+                                                    value="Date of Birth"
+                                                />
+                                                <TextInput
+                                                    id="date_of_birth"
+                                                    name="date_of_birth"
+                                                    type="date"
+                                                    className="mt-1 block w-full"
+                                                    value={data.date_of_birth}
+                                                    onChange={handleFieldChange(
+                                                        "date_of_birth"
+                                                    )}
+                                                />
+                                                <InputError
+                                                    className="mt-2"
+                                                    message={
+                                                        errors.date_of_birth
+                                                    }
+                                                />
+                                            </div>
+
+                                            <div>
+                                                <InputLabel
+                                                    htmlFor="gender"
+                                                    value="Gender"
+                                                />
+                                                <select
+                                                    id="gender"
+                                                    name="gender"
+                                                    className="mt-1 rounded-md bg-gray-50 dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-200 border-gray-300 shadow-sm focus:border-zinc-500 focus:ring-zinc-500 block w-full p-2.5"
+                                                    value={data.gender}
+                                                    onChange={handleFieldChange(
+                                                        "gender"
+                                                    )}
+                                                >
+                                                    <option value="">
+                                                        Select gender
+                                                    </option>
+                                                    <option value="male">
+                                                        Male
+                                                    </option>
+                                                    <option value="female">
+                                                        Female
+                                                    </option>
+                                                    <option value="other">
+                                                        Other
+                                                    </option>
+                                                </select>
+                                                <InputError
+                                                    className="mt-2"
+                                                    message={errors.gender}
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="border border-zinc-200 dark:border-zinc-700 rounded-md overflow-hidden bg-white dark:bg-zinc-900">
+                                    <div className="px-5 py-4 text-lg font-semibold text-gray-900 bg-gray-50 dark:text-white dark:bg-zinc-700">
+                                        Bio
+                                    </div>
+                                    <div className="p-6 space-y-4">
+                                        <div>
+                                            <InputLabel
+                                                htmlFor="bio"
+                                                value="Bio"
+                                            />
+                                            <textarea
+                                                id="bio"
+                                                name="bio"
+                                                rows={4}
+                                                className="rounded-md bg-gray-50 dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-200 border-gray-300 shadow-sm focus:border-zinc-500 focus:ring-zinc-500 block w-full p-2.5"
+                                                value={data.bio}
+                                                onChange={handleFieldChange(
+                                                    "bio"
+                                                )}
+                                                placeholder="Tell us about this user..."
+                                            />
+                                            <InputError
+                                                className="mt-2"
+                                                message={errors.bio}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="lg:col-span-2 space-y-6">
+                                <div className="border border-zinc-200 dark:border-zinc-700 rounded-md overflow-hidden bg-white dark:bg-zinc-900">
+                                    <div className="px-5 py-4 text-lg font-semibold text-gray-900 bg-gray-50 dark:text-white dark:bg-zinc-700">
+                                        Account Settings
+                                    </div>
+                                    <div className="p-6 space-y-4">
+                                        <div>
+                                            <InputLabel
+                                                htmlFor="role"
+                                                value="Role"
+                                            />
+                                            <select
+                                                id="role"
+                                                name="role"
+                                                className="mt-1 rounded-md bg-gray-50 dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-200 border-gray-300 shadow-sm focus:border-zinc-500 focus:ring-zinc-500 block w-full p-2.5"
+                                                value={data.role}
+                                                onChange={handleFieldChange(
+                                                    "role"
+                                                )}
+                                            >
+                                                {roleOptions.map((option) => (
+                                                    <option
+                                                        key={option.value}
+                                                        value={option.value}
+                                                    >
+                                                        {option.label}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                            <InputError
+                                                className="mt-2"
+                                                message={errors.role}
+                                            />
+                                        </div>
+
+                                        <div>
+                                            <InputLabel
+                                                htmlFor="status"
+                                                value="Status"
+                                            />
+                                            <select
+                                                id="status"
+                                                name="status"
+                                                className="mt-1 rounded-md bg-gray-50 dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-200 border-gray-300 shadow-sm focus:border-zinc-500 focus:ring-zinc-500 block w-full p-2.5"
+                                                value={data.status}
+                                                onChange={handleFieldChange(
+                                                    "status"
+                                                )}
+                                            >
+                                                {statusOptions.map((option) => (
+                                                    <option
+                                                        key={option.value}
+                                                        value={option.value}
+                                                    >
+                                                        {option.label}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                            <InputError
+                                                className="mt-2"
+                                                message={errors.status}
+                                            />
+                                        </div>
+
+                                        <div className="flex items-center gap-2">
+                                            <Checkbox
+                                                name="verified"
+                                                checked={Boolean(data.verified)}
+                                                onChange={handleCheckboxChange(
+                                                    "verified"
+                                                )}
+                                            />
+                                            <span className="text-sm text-gray-700 dark:text-zinc-200">
+                                                Verified
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="border border-zinc-200 dark:border-zinc-700 rounded-md overflow-hidden bg-white dark:bg-zinc-900">
+                                    <div className="px-5 py-4 text-lg font-semibold text-gray-900 bg-gray-50 dark:text-white dark:bg-zinc-700">
+                                        Location Details
+                                    </div>
+                                    <div className="p-6 space-y-4">
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div>
+                                                <InputLabel
+                                                    htmlFor="country"
+                                                    value="Country"
+                                                />
+                                                <TextInput
+                                                    id="country"
+                                                    name="country"
+                                                    className="mt-1 block w-full"
+                                                    value={data.country}
+                                                    onChange={handleFieldChange(
+                                                        "country"
+                                                    )}
+                                                    placeholder="Country"
+                                                />
+                                                <InputError
+                                                    className="mt-2"
+                                                    message={errors.country}
+                                                />
+                                            </div>
+
+                                            <div>
+                                                <InputLabel
+                                                    htmlFor="city"
+                                                    value="City"
+                                                />
+                                                <TextInput
+                                                    id="city"
+                                                    name="city"
+                                                    className="mt-1 block w-full"
+                                                    value={data.city}
+                                                    onChange={handleFieldChange(
+                                                        "city"
+                                                    )}
+                                                    placeholder="City"
+                                                />
+                                                <InputError
+                                                    className="mt-2"
+                                                    message={errors.city}
+                                                />
+                                            </div>
+
+                                            <div>
+                                                <InputLabel
+                                                    htmlFor="province"
+                                                    value="State/Province"
+                                                />
+                                                <TextInput
+                                                    id="province"
+                                                    name="province"
+                                                    className="mt-1 block w-full"
+                                                    value={data.province}
+                                                    onChange={handleFieldChange(
+                                                        "province"
+                                                    )}
+                                                    placeholder="State or Province"
+                                                />
+                                                <InputError
+                                                    className="mt-2"
+                                                    message={errors.province}
+                                                />
+                                            </div>
+
+                                            <div>
+                                                <InputLabel
+                                                    htmlFor="zip_code"
+                                                    value="Zip / Postal Code"
+                                                />
+                                                <TextInput
+                                                    id="zip_code"
+                                                    name="zip_code"
+                                                    className="mt-1 block w-full"
+                                                    value={data.zip_code}
+                                                    onChange={handleFieldChange(
+                                                        "zip_code"
+                                                    )}
+                                                    placeholder="Postal code"
+                                                />
+                                                <InputError
+                                                    className="mt-2"
+                                                    message={errors.zip_code}
+                                                />
+                                            </div>
+
+                                            <div className="md:col-span-2">
+                                                <InputLabel
+                                                    htmlFor="address"
+                                                    value="Street Address"
+                                                />
+                                                <TextInput
+                                                    id="address"
+                                                    name="address"
+                                                    className="mt-1 block w-full"
+                                                    value={data.address}
+                                                    onChange={handleFieldChange(
+                                                        "address"
+                                                    )}
+                                                    placeholder="Street address"
+                                                />
+                                                <InputError
+                                                    className="mt-2"
+                                                    message={errors.address}
+                                                />
+                                            </div>
+
+                                            <div className="md:col-span-2">
+                                                <InputLabel
+                                                    htmlFor="time_zone"
+                                                    value="Time Zone"
+                                                />
+                                                <TextInput
+                                                    id="time_zone"
+                                                    name="time_zone"
+                                                    className="mt-1 block w-full"
+                                                    value={data.time_zone}
+                                                    onChange={handleFieldChange(
+                                                        "time_zone"
+                                                    )}
+                                                    placeholder="e.g., America/New_York"
+                                                />
+                                                <InputError
+                                                    className="mt-2"
+                                                    message={errors.time_zone}
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="border border-zinc-200 dark;border-zinc-700 rounded-md overflow-hidden bg-white dark:bg-zinc-900">
+                                    <div className="px-5 py-4 text-lg font-semibold text-gray-900 bg-gray-50 dark:text-white dark:bg-zinc-700">
+                                        Security
+                                    </div>
+                                    <div className="p-6 space-y-4">
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div>
+                                                <InputLabel
+                                                    htmlFor="password"
+                                                    value="Password"
+                                                />
+                                                <TextInput
+                                                    id="password"
+                                                    name="password"
+                                                    type="password"
+                                                    className="mt-1 block w-full"
+                                                    value={data.password}
+                                                    onChange={handleFieldChange(
+                                                        "password"
+                                                    )}
+                                                    placeholder="Leave blank to keep current password"
+                                                    autoComplete="new-password"
+                                                />
+                                                <InputError
+                                                    className="mt-2"
+                                                    message={errors.password}
+                                                />
+                                            </div>
+
+                                            <div>
+                                                <InputLabel
+                                                    htmlFor="password_confirmation"
+                                                    value="Confirm Password"
+                                                />
+                                                <TextInput
+                                                    id="password_confirmation"
+                                                    name="password_confirmation"
+                                                    type="password"
+                                                    className="mt-1 block w-full"
+                                                    value={data.password_confirmation}
+                                                    onChange={handleFieldChange(
+                                                        "password_confirmation"
+                                                    )}
+                                                    placeholder="Confirm new password"
+                                                    autoComplete="new-password"
+                                                />
+                                                <InputError
+                                                    className="mt-2"
+                                                    message={
+                                                        errors.password_confirmation
+                                                    }
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
+
+                        <div className="border border-zinc-200 dark:border-zinc-700 rounded-md overflow-hidden bg-white dark:bg-zinc-900">
+                            <div className="p-6 flex flex-col-reverse sm:flex-row sm:items-center sm:justify-end gap-3">
+                                <SecondaryButton
+                                    type="button"
+                                    onClick={handleCancel}
+                                    className="justify-center"
+                                    disabled={processing}
+                                >
+                                    Cancel
+                                </SecondaryButton>
+                                <PrimaryButton type="submit" disabled={processing}>
+                                    {processing ? "Saving..." : "Update User"}
+                                </PrimaryButton>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
+
+            <CropperModal
+                show={showCropper}
+                image={previewImage}
+                onCancel={handleCropCancel}
+                onApply={handleCropApply}
+            />
         </AppLayout>
     );
 }

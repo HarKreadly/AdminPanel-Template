@@ -48,7 +48,7 @@ export default function DeleteUserForm({ className = '' }) {
     return (
         <section className={`space-y-6 ${className}`}>
             <header>
-                <h2 className="text-lg font-medium text-zinc-900 dark:text-zinc-100">
+                <h2 className="text-lg font-bold text-zinc-900 dark:text-zinc-100 ">
                     Delete Account
                 </h2>
 

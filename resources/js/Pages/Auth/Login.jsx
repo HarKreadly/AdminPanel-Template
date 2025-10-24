@@ -5,20 +5,53 @@ import PrimaryButton from "@/Components/PrimaryButton";
 import TextInput from "@/Components/TextInput";
 import GuestLayout from "@/Layouts/GuestLayout";
 import { Head, Link, useForm } from "@inertiajs/react";
-import { FaGoogle } from "react-icons/fa";
 import { HiArrowLeft, HiEye, HiEyeOff } from "react-icons/hi";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FcGoogle } from "react-icons/fc";
-
 
 export default function Login({ status, canResetPassword }) {
     const [showPassword, setShowPassword] = useState(false);
+    const [currentSlide, setCurrentSlide] = useState(0);
 
     const { data, setData, post, processing, errors, reset } = useForm({
         email: "",
         password: "",
         remember: false,
     });
+
+    const carouselSlides = [
+        {
+            title: "Secure Access Control",
+            description:
+                "Advanced authentication and role-based permissions for your organization",
+            icon: "🔐",
+        },
+        {
+            title: "Real-time Monitoring",
+            description:
+                "Track user activity and system performance with live dashboards",
+            icon: "📊",
+        },
+        {
+            title: "Data Management",
+            description:
+                "Organize and manage your data with powerful administrative tools",
+            icon: "💾",
+        },
+    ];
+
+    // Auto-advance carousel
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setCurrentSlide((prev) => (prev + 1) % carouselSlides.length);
+        }, 5000);
+
+        return () => clearInterval(timer);
+    }, [carouselSlides.length]);
+
+    const goToSlide = (index) => {
+        setCurrentSlide(index);
+    };
 
     const submit = (e) => {
         e.preventDefault();
@@ -30,11 +63,11 @@ export default function Login({ status, canResetPassword }) {
 
     return (
         <GuestLayout>
-            <Head title="Log in" />
+            <Head title="Admin Login" />
 
             <main className="min-h-screen flex">
                 {/* Left Side - Hero Section */}
-                <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 relative overflow-hidden">
+                <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900 relative overflow-hidden">
                     {/* Geometric Background Pattern */}
                     <div className="absolute inset-0 opacity-20">
                         <div
@@ -52,16 +85,16 @@ export default function Login({ status, canResetPassword }) {
                         {/* Logo and Back Button */}
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center text-slate-900 font-bold text-xl">
-                                    VP
+                                <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center text-white font-bold text-xl">
+                                    A
                                 </div>
                                 <span className="text-2xl font-bold">
-                                    VidPro
+                                    AdminPro
                                 </span>
                             </div>
                             <Link
                                 href="/"
-                                className="flex items-center gap-2 text-sm hover:text-blue-300 transition-colors"
+                                className="flex items-center gap-2 text-sm hover:text-blue-300 transition-colors bg-white/10 backdrop-blur-sm rounded-full px-4 py-2"
                             >
                                 <HiArrowLeft className="w-4 h-4" />
                                 Back to Website
@@ -71,22 +104,107 @@ export default function Login({ status, canResetPassword }) {
                         {/* Hero Content */}
                         <div className="max-w-xl">
                             <h1 className="text-5xl font-bold leading-tight mb-6">
-                                Edit Smarter. Export Faster.
-                                <br />
-                                Create Anywhere.
+                                Access Your Admin Dashboard
                             </h1>
                             <p className="text-lg text-blue-100">
-                                From quick social media clips to full-length
-                                videos, our powerful editor lets you work
-                                seamlessly across devices.
+                                Manage users, monitor performance, and control
+                                your organization from anywhere, anytime.
                             </p>
                         </div>
 
-                        {/* Progress Indicator */}
-                        <div className="flex gap-2">
-                            <div className="w-12 h-1 bg-white rounded-full"></div>
-                            <div className="w-12 h-1 bg-white/30 rounded-full"></div>
-                            <div className="w-12 h-1 bg-white/30 rounded-full"></div>
+                        {/* Interactive Text Carousel */}
+                        <div className="space-y-4">
+                            <div className="text-center">
+                                <div className="text-4xl mb-4 opacity-80">
+                                    {carouselSlides[currentSlide].icon}
+                                </div>
+                                <h2 className="text-2xl font-bold mb-3">
+                                    {carouselSlides[currentSlide].title}
+                                </h2>
+                                <p className="text-lg text-blue-100 max-w-md mx-auto leading-relaxed">
+                                    {carouselSlides[currentSlide].description}
+                                </p>
+                            </div>
+
+                            {/* Navigation Dots */}
+                            <div className="flex items-center justify-center gap-3 mt-6">
+                                {carouselSlides.map((_, index) => (
+                                    <button
+                                        key={index}
+                                        onClick={() => goToSlide(index)}
+                                        className={`transition-all duration-300 rounded-full ${
+                                            index === currentSlide
+                                                ? "w-8 h-3 bg-white"
+                                                : "w-3 h-3 bg-white/40 hover:bg-white/60"
+                                        }`}
+                                        aria-label={`Go to slide ${index + 1}`}
+                                    />
+                                ))}
+                            </div>
+
+                            {/* Navigation Arrows */}
+                            <div className="flex items-center justify-center gap-4 mt-4">
+                                <button
+                                    onClick={() =>
+                                        goToSlide(
+                                            (currentSlide -
+                                                1 +
+                                                carouselSlides.length) %
+                                                carouselSlides.length
+                                        )
+                                    }
+                                    className="p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors duration-200"
+                                    aria-label="Previous slide"
+                                >
+                                    <svg
+                                        className="w-5 h-5"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth={2}
+                                            d="M15 19l-7-7 7-7"
+                                        />
+                                    </svg>
+                                </button>
+
+                                <span className="text-sm text-blue-200 font-medium">
+                                    {String(currentSlide + 1).padStart(2, "0")}{" "}
+                                    /{" "}
+                                    {String(carouselSlides.length).padStart(
+                                        2,
+                                        "0"
+                                    )}
+                                </span>
+
+                                <button
+                                    onClick={() =>
+                                        goToSlide(
+                                            (currentSlide + 1) %
+                                                carouselSlides.length
+                                        )
+                                    }
+                                    className="p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors duration-200"
+                                    aria-label="Next slide"
+                                >
+                                    <svg
+                                        className="w-5 h-5"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth={2}
+                                            d="M9 5l7 7-7 7"
+                                        />
+                                    </svg>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -96,11 +214,11 @@ export default function Login({ status, canResetPassword }) {
                     <div className="w-full max-w-md">
                         {/* Mobile Logo */}
                         <div className="lg:hidden flex items-center gap-3 mb-8">
-                            <div className="w-10 h-10 bg-slate-900 dark:bg-white rounded-lg flex items-center justify-center text-white dark:text-slate-900 font-bold text-xl">
-                                VP
+                            <div className="w-10 h-10 bg-blue-600 dark:bg-blue-500 rounded-lg flex items-center justify-center text-white dark:text-white font-bold text-xl">
+                                A
                             </div>
                             <span className="text-2xl font-bold text-slate-900 dark:text-white">
-                                VidPro
+                                AdminPro
                             </span>
                         </div>
 
@@ -110,8 +228,8 @@ export default function Login({ status, canResetPassword }) {
                                     Welcome Back!
                                 </h1>
                                 <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-                                    Log in to start creating stunning videos
-                                    with ease.
+                                    Sign in to access your admin dashboard and
+                                    manage your organization.
                                 </p>
                             </div>
 
@@ -216,10 +334,10 @@ export default function Login({ status, canResetPassword }) {
                             </div>
 
                             <PrimaryButton
-                                className="w-full justify-center bg-zinc-900 hover:bg-zinc-800 dark:bg-zinc-100 dark:hover:bg-zinc-200 text-white dark:text-zinc-900 py-3 rounded-lg font-medium"
+                                className="w-full justify-center bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white py-3 rounded-lg font-medium"
                                 disabled={processing}
                             >
-                                Login
+                                Sign In to AdminPro
                             </PrimaryButton>
 
                             <div className="relative">
@@ -244,12 +362,12 @@ export default function Login({ status, canResetPassword }) {
                             </button>
 
                             <p className="text-center text-sm text-zinc-600 dark:text-zinc-400">
-                                Don't have an account?{" "}
+                                Don't have an admin account?{" "}
                                 <Link
                                     href={route("register")}
                                     className="font-semibold text-zinc-900 hover:text-zinc-700 dark:text-zinc-100 dark:hover:text-zinc-300"
                                 >
-                                    Sign up here
+                                    Create one here
                                 </Link>
                             </p>
                         </form>

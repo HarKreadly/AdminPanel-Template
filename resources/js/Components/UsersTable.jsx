@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect } from "react";
+import { router } from "@inertiajs/react";
 import SearchInput from "./UsersTable/SearchInput";
 import FilterSelect from "./UsersTable/FilterSelect";
 import ColumnVisibilityDropdown from "./UsersTable/ColumnVisibilityDropdown";
@@ -7,7 +8,11 @@ import TableHeader from "./UsersTable/TableHeader";
 import UserRow from "./UsersTable/UserRow";
 import Pagination from "./UsersTable/Pagination";
 
-export default function UsersTable({ users: initialUsers = [] }) {
+export default function UsersTable({
+    users: initialUsers = [],
+    onAddUser,
+    onExportUsers,
+}) {
     const [users, setUsers] = useState(initialUsers);
     const [selectedUsers, setSelectedUsers] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
@@ -245,6 +250,56 @@ export default function UsersTable({ users: initialUsers = [] }) {
         { value: "all", label: "All Users" },
     ];
 
+    const handleToolbarAdd = () => {
+        if (typeof onAddUser === "function") {
+            onAddUser();
+            return;
+        }
+
+        router.visit("/users/create");
+    };
+
+    const handleToolbarExport = () => {
+        if (typeof onExportUsers === "function") {
+            onExportUsers();
+            return;
+        }
+
+        console.warn("UsersTable: onExportUsers handler not provided.");
+    };
+
+    const handleToolbarEdit = () => {
+        if (selectedUsers.length !== 1) {
+            return;
+        }
+
+        const [userId] = selectedUsers;
+        router.visit(`/users/${userId}/edit`);
+    };
+
+    const handleToolbarDelete = () => {
+        if (selectedUsers.length !== 1) {
+            return;
+        }
+
+        const [userId] = selectedUsers;
+
+        if (
+            !window.confirm(
+                "Are you sure you want to delete this user? This action cannot be undone."
+            )
+        ) {
+            return;
+        }
+
+        router.delete(`/users/${userId}`, {
+            preserveScroll: true,
+            onFinish: () => {
+                setSelectedUsers([]);
+            },
+        });
+    };
+
     return (
         <div className="mt-6">
             <div className="mx-auto">
@@ -255,34 +310,44 @@ export default function UsersTable({ users: initialUsers = [] }) {
                             <div className="flex items-center gap-3 flex-wrap">
                                 <SearchInput
                                     value={searchTerm}
-                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                    onChange={(e) =>
+                                        setSearchTerm(e.target.value)
+                                    }
                                     placeholder="Search users..."
                                 />
 
                                 <FilterSelect
                                     value={roleFilter}
-                                    onChange={(e) => setRoleFilter(e.target.value)}
+                                    onChange={(e) =>
+                                        setRoleFilter(e.target.value)
+                                    }
                                     options={roleOptions}
                                     label="Role Filter"
                                 />
 
                                 <FilterSelect
                                     value={statusFilter}
-                                    onChange={(e) => setStatusFilter(e.target.value)}
+                                    onChange={(e) =>
+                                        setStatusFilter(e.target.value)
+                                    }
                                     options={statusOptions}
                                     label="Status Filter"
                                 />
 
                                 <FilterSelect
                                     value={genderFilter}
-                                    onChange={(e) => setGenderFilter(e.target.value)}
+                                    onChange={(e) =>
+                                        setGenderFilter(e.target.value)
+                                    }
                                     options={genderOptions}
                                     label="Gender Filter"
                                 />
 
                                 <FilterSelect
                                     value={deletedFilter}
-                                    onChange={(e) => setDeletedFilter(e.target.value)}
+                                    onChange={(e) =>
+                                        setDeletedFilter(e.target.value)
+                                    }
                                     options={deletedOptions}
                                     label="Deleted Filter"
                                 />
@@ -295,7 +360,14 @@ export default function UsersTable({ users: initialUsers = [] }) {
                                     isOpen={showColumnVisibility}
                                     setIsOpen={setShowColumnVisibility}
                                 />
-                                <ActionButtons />
+                                <ActionButtons
+                                    onEdit={handleToolbarEdit}
+                                    onDelete={handleToolbarDelete}
+                                    onAdd={handleToolbarAdd}
+                                    onExport={handleToolbarExport}
+                                    canEdit={selectedUsers.length === 1}
+                                    canDelete={selectedUsers.length === 1}
+                                />
                             </div>
                         </div>
 
@@ -313,7 +385,9 @@ export default function UsersTable({ users: initialUsers = [] }) {
 
                                 <tbody
                                     className={`transition-opacity duration-300 ${
-                                        isTransitioning ? "opacity-100" : "opacity-100"
+                                        isTransitioning
+                                            ? "opacity-100"
+                                            : "opacity-100"
                                     }`}
                                 >
                                     {paginatedUsers.map((user) => (

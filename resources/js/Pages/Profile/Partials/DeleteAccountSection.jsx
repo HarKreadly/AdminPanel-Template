@@ -9,14 +9,6 @@ export default function DeleteAccountSection() {
                 Danger Zone
             </div>
             <div className="p-4">
-                <div className="mb-4">
-                    <h5 className="text-sm font-semibold text-gray-900 dark:text-white mb-2">
-                        Delete Account
-                    </h5>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                        Once you delete your account, there is no going back. Please be certain.
-                    </p>
-                </div>
                 <DeleteUserForm />
             </div>
         </div>

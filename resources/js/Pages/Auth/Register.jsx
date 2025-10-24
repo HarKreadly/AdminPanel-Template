@@ -6,12 +6,12 @@ import GuestLayout from "@/Layouts/GuestLayout";
 import { Head, Link, useForm } from "@inertiajs/react";
 import { FcGoogle } from "react-icons/fc";
 import { HiArrowLeft, HiEye, HiEyeOff } from "react-icons/hi";
-import { useState } from "react";
-
+import { useState, useEffect } from "react";
 
 export default function Register() {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const [currentSlide, setCurrentSlide] = useState(0);
 
     const { data, setData, post, processing, errors, reset } = useForm({
         name: "",
@@ -19,6 +19,40 @@ export default function Register() {
         password: "",
         password_confirmation: "",
     });
+
+    const carouselSlides = [
+        {
+            title: "Streamline Operations",
+            description:
+                "Manage your entire organization from a single, intuitive dashboard",
+            icon: "📊",
+        },
+        {
+            title: "User Management",
+            description:
+                "Easily control user access, permissions, and organizational hierarchy",
+            icon: "👥",
+        },
+        {
+            title: "Real-time Analytics",
+            description:
+                "Get insights and reports to make data-driven decisions",
+            icon: "📈",
+        },
+    ];
+
+    // Auto-advance carousel
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setCurrentSlide((prev) => (prev + 1) % carouselSlides.length);
+        }, 4000);
+
+        return () => clearInterval(timer);
+    }, [carouselSlides.length]);
+
+    const goToSlide = (index) => {
+        setCurrentSlide(index);
+    };
 
     const submit = (e) => {
         e.preventDefault();
@@ -38,22 +72,22 @@ export default function Register() {
                     <div className="w-full max-w-md">
                         {/* Mobile Logo */}
                         <div className="lg:hidden flex items-center gap-3 mb-8">
-                            <div className="w-10 h-10 bg-slate-900 dark:bg-white rounded-lg flex items-center justify-center text-white dark:text-slate-900 font-bold text-xl">
-                                VP
+                            <div className="w-10 h-10 bg-blue-600 dark:bg-blue-500 rounded-lg flex items-center justify-center text-white dark:text-white font-bold text-xl">
+                                A
                             </div>
                             <span className="text-2xl font-bold text-slate-900 dark:text-white">
-                                VidPro
+                                AdminPro
                             </span>
                         </div>
 
                         <form onSubmit={submit} className="space-y-6">
                             <div>
                                 <h1 className="text-3xl font-bold text-zinc-900 dark:text-zinc-100">
-                                    Create Your Account
+                                    Create Admin Account
                                 </h1>
                                 <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-                                    Start editing smarter and sharing faster —
-                                    join VidPro today.
+                                    Join the AdminPro platform and manage your
+                                    organization efficiently.
                                 </p>
                             </div>
 
@@ -195,10 +229,10 @@ export default function Register() {
                             </div>
 
                             <PrimaryButton
-                                className="w-full justify-center bg-zinc-900 hover:bg-zinc-800 dark:bg-zinc-100 dark:hover:bg-zinc-200 text-white dark:text-zinc-900 py-3 rounded-lg font-medium"
+                                className="w-full justify-center bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white py-3 rounded-lg font-medium"
                                 disabled={processing}
                             >
-                                Register
+                                Create Admin Account
                             </PrimaryButton>
 
                             <div className="relative">
@@ -223,12 +257,12 @@ export default function Register() {
                             </button>
 
                             <p className="text-center text-sm text-zinc-600 dark:text-zinc-400">
-                                Already have an account?{" "}
+                                Already have an admin account?{" "}
                                 <Link
                                     href={route("login")}
                                     className="font-semibold text-zinc-900 hover:text-zinc-700 dark:text-zinc-100 dark:hover:text-zinc-300"
                                 >
-                                    Log in here
+                                    Sign in here
                                 </Link>
                             </p>
                         </form>
@@ -236,7 +270,7 @@ export default function Register() {
                 </div>
 
                 {/* Right Side - Hero Section */}
-                <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 relative overflow-hidden">
+                <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900 relative overflow-hidden">
                     {/* Geometric Background Pattern */}
                     <div className="absolute inset-0 opacity-20">
                         <div
@@ -254,16 +288,16 @@ export default function Register() {
                         {/* Logo and Back Button */}
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center text-slate-900 font-bold text-xl">
-                                    VP
+                                <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center text-white font-bold text-xl">
+                                    A
                                 </div>
                                 <span className="text-2xl font-bold">
-                                    VidPro
+                                    AdminPro
                                 </span>
                             </div>
                             <Link
                                 href="/"
-                                className="flex items-center gap-2 text-sm hover:text-blue-300 transition-colors"
+                                className="flex items-center gap-2 text-sm hover:text-blue-300 transition-colors bg-white/10 backdrop-blur-sm rounded-full px-4 py-2"
                             >
                                 <HiArrowLeft className="w-4 h-4" />
                                 Back to Website
@@ -273,19 +307,108 @@ export default function Register() {
                         {/* Hero Content */}
                         <div className="max-w-xl">
                             <h1 className="text-5xl font-bold leading-tight mb-6">
-                                Join the Future of Video Creation.
+                                Manage Your Organization Efficiently
                             </h1>
                             <p className="text-lg text-blue-100">
-                                Collaborate, edit, and publish content faster
-                                with our all-in-one cloud editor.
+                                Streamline operations, manage users, and oversee
+                                your entire organization from one powerful
+                                dashboard.
                             </p>
                         </div>
 
-                        {/* Progress Indicator */}
-                        <div className="flex gap-2">
-                            <div className="w-12 h-1 bg-white/30 rounded-full"></div>
-                            <div className="w-12 h-1 bg-white rounded-full"></div>
-                            <div className="w-12 h-1 bg-white/30 rounded-full"></div>
+                        {/* Interactive Text Carousel */}
+                        <div className="space-y-4">
+                            <div className="text-center">
+                                <div className="text-4xl mb-4 opacity-80">
+                                    {carouselSlides[currentSlide].icon}
+                                </div>
+                                <h2 className="text-2xl font-bold mb-3">
+                                    {carouselSlides[currentSlide].title}
+                                </h2>
+                                <p className="text-lg text-blue-100 max-w-md mx-auto leading-relaxed">
+                                    {carouselSlides[currentSlide].description}
+                                </p>
+                            </div>
+
+                            {/* Navigation Dots */}
+                            <div className="flex items-center justify-center gap-3 mt-6">
+                                {carouselSlides.map((_, index) => (
+                                    <button
+                                        key={index}
+                                        onClick={() => goToSlide(index)}
+                                        className={`transition-all duration-300 rounded-full ${
+                                            index === currentSlide
+                                                ? "w-8 h-3 bg-white"
+                                                : "w-3 h-3 bg-white/40 hover:bg-white/60"
+                                        }`}
+                                        aria-label={`Go to slide ${index + 1}`}
+                                    />
+                                ))}
+                            </div>
+
+                            {/* Navigation Arrows */}
+                            <div className="flex items-center justify-center gap-4 mt-4">
+                                <button
+                                    onClick={() =>
+                                        goToSlide(
+                                            (currentSlide -
+                                                1 +
+                                                carouselSlides.length) %
+                                                carouselSlides.length
+                                        )
+                                    }
+                                    className="p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors duration-200"
+                                    aria-label="Previous slide"
+                                >
+                                    <svg
+                                        className="w-5 h-5"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth={2}
+                                            d="M15 19l-7-7 7-7"
+                                        />
+                                    </svg>
+                                </button>
+
+                                <span className="text-sm text-blue-200 font-medium">
+                                    {String(currentSlide + 1).padStart(2, "0")}{" "}
+                                    /{" "}
+                                    {String(carouselSlides.length).padStart(
+                                        2,
+                                        "0"
+                                    )}
+                                </span>
+
+                                <button
+                                    onClick={() =>
+                                        goToSlide(
+                                            (currentSlide + 1) %
+                                                carouselSlides.length
+                                        )
+                                    }
+                                    className="p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors duration-200"
+                                    aria-label="Next slide"
+                                >
+                                    <svg
+                                        className="w-5 h-5"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth={2}
+                                            d="M9 5l7 7-7 7"
+                                        />
+                                    </svg>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>

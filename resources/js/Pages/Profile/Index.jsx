@@ -30,8 +30,6 @@ export default function Index({ user, sessions = [], auth }) {
                 <div className="mx-auto  px-4 sm:px-6 lg:px-8">
                     <Breadcrumb
                         items={[
-                            { label: "Management", href: "/dashboard" },
-                            { label: "Users", href: "/users" },
                             { label: user.name, href: `/users/${user.id}` },
                         ]}
                     />
